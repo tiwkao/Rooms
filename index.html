@@ -1,63 +1,80 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<meta charset="UTF-8">
-
-<title>Medical Dormitory Booking</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
 <body class="bg-gray-100">
 
-<div class="max-w-xl mx-auto p-6">
+<div class="container mx-auto mt-8 p-4 bg-white rounded-lg shadow-md">
+    <h1 class="text-2xl font-semibold mb-4">Form</h1>
 
-<h1 class="text-2xl font-bold mb-6">
-จองห้องพักนักศึกษาแพทย์
-</h1>
+    <form>
+        <div class="mb-4">
+            <label for="nameId" class="block text-sm font-medium text-gray-600">ข้อมูล 1</label>
+            <input type="text" id="nameId" name="nameId" placeholder="Enter nameId" class="mt-1 p-2 border rounded-md w-full">
+        </div>
 
-<input id="name"
-placeholder="ชื่อ"
-class="border p-2 w-full mb-2">
+        <div class="mb-4">
+            <label for="roleId" class="block text-sm font-medium text-gray-600">ข้อมูล 2</label>
+            <input type="text" id="roleId" name="roleId" placeholder="Enter roleId" class="mt-1 p-2 border rounded-md w-full">
+        </div>
 
-<input id="university"
-placeholder="มหาวิทยาลัย"
-class="border p-2 w-full mb-2">
+        <div class="mb-4">
+            <label for="numberId" class="block text-sm font-medium text-gray-600">ข้อมูล 3</label>
+            <input type="text" id="numberId" name="numberId" placeholder="Enter numberID" class="mt-1 p-2 border rounded-md w-full">
+        </div>
 
-<input id="phone"
-placeholder="เบอร์โทร"
-class="border p-2 w-full mb-2">
+        <div class="mb-4">
+            <label for="file" class="block text-sm font-medium text-gray-600">อัพโหลดรูปภาพ</label>
+            <input type="file" id="file" name="file" accept="image/*" class="mt-1 p-2 border rounded-md">
+        </div>
 
-<label>Check-in</label>
-<input type="date"
-id="checkin"
-class="border p-2 w-full mb-2">
-
-<label>Check-out</label>
-<input type="date"
-id="checkout"
-class="border p-2 w-full mb-2">
-
-<select id="room"
-class="border p-2 w-full mb-4"></select>
-
-<button
-onclick="bookRoom()"
-class="bg-blue-600 text-white w-full p-3 rounded">
-
-จองห้องพัก
-
-</button>
-
+        <div class="mb-4">
+            <img src="https://via.placeholder.com/100" alt="รูปภาพ" id="preview" class="mt-2 w-24 h-24">
+        </div>
+        <button type="button" id="submitBtn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Submit</button>
+    </form>
 </div>
+  <script>
+    let url = "//";
+    let file = document.querySelector("input[type='file']");
+    let img = document.querySelector("img");
+    let nameIdInput = document.getElementById("nameId");
+    let roleId = document.getElementById("roleId");
+    let numberIdInput = document.getElementById("numberId");
+    let submitBtn = document.getElementById("submitBtn");
 
-<script src="js/liff.js"></script>
-<script src="js/api.js"></script>
-<script src="js/booking.js"></script>
+    submitBtn.addEventListener('click', () => {
+        let fr = new FileReader();
+        fr.addEventListener('loadend', () => {
+            let res = fr.result;
+            img.src = res;
+            let spt = res.split("base64,")[1];
+
+            let obj = {
+                base64: spt,
+                type: file.files[0].type,
+                name: file.files[0].name,
+                nameId: nameIdInput.value,
+                roleId: roleId.value,
+                numberId: numberIdInput.value
+            }
+
+            fetch(url, {
+                method: "POST",
+                body: JSON.stringify(obj)
+            })
+            .then(r => r.text())
+            .then(data => console.log(data))
+        })
+
+        fr.readAsDataURL(file.files[0]);
+    });
+</script>
 
 </body>
 </html>
